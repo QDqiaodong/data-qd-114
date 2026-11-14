@@ -1,0 +1,39 @@
+{
+  "strata": [
+    {
+      "id": "small",
+      "population": 4
+    },
+    {
+      "id": "large",
+      "population": 6
+    }
+  ],
+  "sample": [
+    {
+      "unit_id": "S1",
+      "stratum": "small",
+      "value": "10"
+    },
+    {
+      "unit_id": "S2",
+      "stratum": "small",
+      "value": "14"
+    },
+    {
+      "unit_id": "L1",
+      "stratum": "large",
+      "value": "20"
+    },
+    {
+      "unit_id": "L2",
+      "stratum": "large",
+      "value": "24"
+    },
+    {
+      "unit_id": "L3",
+      "stratum": "large",
+      "value": "28"
+    }
+  ]
+}
