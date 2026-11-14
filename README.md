@@ -26,8 +26,12 @@ python3 -m venv .venv
 .venv/bin/survey-estimate --source fixtures/survey.json --output run/report.json
 .venv/bin/survey-estimate --source fixtures/survey.json --domains fixtures/domains.json --output run/report-domains.json
 .venv/bin/survey-allocate --source fixtures/allocate_pilot.json --size 8 --output run/quota.json
+.venv/bin/survey-draw --frame fixtures/frame.jsonl --quotas '{"alpha":2,"beta":2,"gamma":1}' --seed demo-1 --state run/draw.db --output run/draw.json
 .venv/bin/python -m unittest discover -s tests -v
 ```
+
+`survey-draw` 的千万行内存实测默认跳过（生成约 470 MB 框、运行约两分钟），用
+`SURVEY_DRAW_BIGTEST=1 .venv/bin/python -m unittest tests.test_draw -v` 显式执行。
 
 输入校验或计算失败退出 2，保留原输出；JSON 通过同目录临时文件完成后替换。
 不对正在被其他进程写入的输出运行；不承诺文件系统断电恢复或在线并发发布。
@@ -63,3 +67,14 @@ python3 -m venv .venv
 与预测总体总量/均值方差（精确分数），输入顺序无关。预算不可行或校验失败退出 2 且
 旧输出不变，成功原子替换。样例 `fixtures/allocate_pilot.json` 在 B=8 时把高方差层
 noisy 普查、其余常规层取最小 2 个单位。详见 [docs/contract.md](docs/contract.md)。
+
+`survey-draw` 从完整抽样框（UTF-8 JSONL，每行仅 `unit_id`、`stratum`）实际选出单位：
+各层按 `SHA256(UTF-8(seed+空字符+unit_id))` 升序（并列按 unit_id）取 `--quotas` 指定
+人数，输出仅含这两个字段、按 unit_id 排序且与框内行序无关。框按行流式处理并分批
+提交到 `--state` SQLite 断点库（千万行时峰值内存 <=64 MiB，全框与全部 ID 不入内存）；
+断点库绑定框原始字节 SHA-256、配额与 seed，变更拒绝且不改库。强杀后同一命令从已提交
+记录之后续跑（只哈希核验、不重解析），解析失败回滚当前批，完整校验后才原子发布，
+发布前后强杀重跑均得相同文件；排他锁禁止并发运行。未知层、重复单位、坏行或层人数
+不足退出 2 且旧输出不变。样例 `fixtures/frame.jsonl` 三层 12 个单位，配额
+`{"alpha":2,"beta":2,"gamma":1}`、seed `demo-1` 时选出 A1、A4、B3、B4、G1。
+详见 [docs/contract.md](docs/contract.md)。

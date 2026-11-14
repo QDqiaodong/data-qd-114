@@ -11,5 +11,6 @@ dependencies = []
 survey-estimate = "survey_estimate.cli:main"
 survey-import = "survey_estimate.survey_import:main"
 survey-allocate = "survey_estimate.allocate:main"
+survey-draw = "survey_estimate.draw:main"
 [tool.setuptools.packages.find]
 where = ["src"]
