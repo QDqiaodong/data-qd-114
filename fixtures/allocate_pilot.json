@@ -1,0 +1,62 @@
+{
+  "strata": [
+    {
+      "id": "singleton",
+      "population": 1
+    },
+    {
+      "id": "stable",
+      "population": 4
+    },
+    {
+      "id": "quiet",
+      "population": 4
+    },
+    {
+      "id": "noisy",
+      "population": 4
+    }
+  ],
+  "sample": [
+    {
+      "unit_id": "G1",
+      "stratum": "singleton",
+      "value": "3"
+    },
+    {
+      "unit_id": "T1",
+      "stratum": "stable",
+      "value": "4"
+    },
+    {
+      "unit_id": "T2",
+      "stratum": "stable",
+      "value": "6"
+    },
+    {
+      "unit_id": "Q1",
+      "stratum": "quiet",
+      "value": "1"
+    },
+    {
+      "unit_id": "Q2",
+      "stratum": "quiet",
+      "value": "2"
+    },
+    {
+      "unit_id": "Q3",
+      "stratum": "quiet",
+      "value": "3"
+    },
+    {
+      "unit_id": "N1",
+      "stratum": "noisy",
+      "value": "1"
+    },
+    {
+      "unit_id": "N2",
+      "stratum": "noisy",
+      "value": "7"
+    }
+  ]
+}

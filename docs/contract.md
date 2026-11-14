@@ -108,3 +108,41 @@ CSV 文件按字节读取并校验哈希后才解析；任何哈希不符立即�
 样例 `fixtures/revisions/manifest.json` 由 `base.csv`（含一条占位单位 S9）和
 `revisions.csv`（S9 在第 2 版被删除、L3 修正为 28）归并，结果与
 `fixtures/survey.json` 逐项等价。
+
+## 整数分层配额规划（`survey-allocate`，v1 规划步骤）
+
+`survey-allocate --source <先导样本JSON> --size B --output <配额JSON>` 为下一次
+独立分层 SRSWOR 抽样规划整数配额。`--source` 与 `survey-estimate` 同口径，沿用
+其全部校验（层结构、unit_id 唯一、每层 1..population 个样本、十进制 value 等）；
+先导样本的无偏层内方差 s²h 视为固定规划参数，不随新抽样重估。仅依赖标准库。
+
+- 人口 `Nh=1` 的层无法估计方差，规划配额固定为 0，其 `pilot_variance` 与
+  `planned_total_variance` 为 null，不参与预算与方差求和。
+- 其余层（`Nh>=2`）先导样本不足 2 个单位时无法估计 s²h，直接拒绝（即使预算
+  本身不可行也先报该校验），不把方差猜为 0。
+- 每层约束 `min(2,Nh) <= nh <= Nh`（即人口 1 层 0，其余 2..Nh），且 `sum(nh)=B`。
+  `B` 必须是 1..100000 的正整数（仅十进制文本，拒绝 0、负数、小数、空白与越界）；
+  若 B 落在可行下界 `sum min(2,Nh)` 与上界 `sum Nh（人口1层除外）` 之外则拒绝。
+
+目标是精确最小化预测总体总量方差 `V = sum Nh²(1-nh/Nh)s²h/nh`。记
+`Ah = Nh²s²h`，则 `V = sum Ah/nh - sum Ah`，每层关于 nh 离散凸；从 nh 增到
+nh+1 的边际收益为 `Ah/(nh(nh+1))`，Ah>0 时随 nh 严格递减。二进制堆每次服务
+当前最大边际收益，从下界 2 起逐人分配到上界或预算耗尽，得到全局整数最优：
+不枚举任何分配方案，也不在每加一人时扫描全部层（每次堆操作 O(log H)）；
+Ah=0 时相邻边际相等（均为 0），堆中允许同层多条零键，过期项惰性跳过。
+全部比较使用 Fraction 精确分数，不使用浮点。边际相等时按层 ID 文本序优先服务
+靠前的层，因此在所有全局最小解中唯一产生按层 ID 排序后字典序最大的配额向量。
+
+输出顶层含 `budget`、`population`（含人口 1 层的总人口 N）、`planned_sample_size`
+（恒等于 budget）、`predicted_variance_total`（即最小 V）、
+`predicted_variance_mean`（V/N²）以及按层 ID 文本序排序的 `strata` 数组；每项含
+`stratum`、`population`、`pilot_sample_size`、`pilot_variance`、`quota`、
+`planned_total_variance`（该层按规划配额的方差贡献 `Ah(Nh-nh)/(Nh nh)`，普查层
+与人口 1 层为 0/null）。除整数外所有连续量沿用 numerator/denominator 文本分数，
+不输出浮点。结果与输入 JSON 中 strata、sample 的排列顺序无关。
+
+失败（源数据校验、先导样本不足、预算不可行、发布）退出 2 且既有输出逐字节不变；
+成功经同目录临时文件原子替换，`--output` 不得与 `--source` 相同且不得为符号链接。
+样例 `fixtures/allocate_pilot.json` 含一个单单位层（配额恒 0、方差字段 null）
+与三个正方差常规层：B=8 时配额为 noisy=4（普查，贡献 0）、quiet=2、stable=2、
+singleton=0，预测总量方差 12、均值方差 12/169；B=12 全部常规层普查，方差为 0。

@@ -25,6 +25,7 @@ python3 -m venv .venv
 .venv/bin/survey-import --manifest fixtures/revisions/manifest.json --output run/sample.json
 .venv/bin/survey-estimate --source fixtures/survey.json --output run/report.json
 .venv/bin/survey-estimate --source fixtures/survey.json --domains fixtures/domains.json --output run/report-domains.json
+.venv/bin/survey-allocate --source fixtures/allocate_pilot.json --size 8 --output run/quota.json
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
@@ -53,3 +54,12 @@ python3 -m venv .venv
 `delete` 移除单位，同版本一致可重放、冲突失败，输出仅含排序后的 `strata` 与 `sample`
 并通过与 `--source` 相同的校验。样例 `fixtures/revisions/manifest.json` 含删除与改值，
 归并结果与 `fixtures/survey.json` 等价。详见 [docs/contract.md](docs/contract.md)。
+
+`survey-allocate` 基于先导样本 JSON 为下一次独立分层 SRSWOR 抽样规划整数配额：
+人口 1 的层配额固定为 0（方差不可估），其余层先导样本不足 2 个单位即拒绝；
+在 `min(2,Nh)<=nh<=Nh` 且 `sum(nh)=B`（B 为 1..100000 正整数）下，用精确分数的
+边际收益堆最小化预测总量方差 `sum Nh²(1-nh/Nh)s²h/nh`，不枚举分配、不每层全扫描、
+不使用浮点；并列最优取按层 ID 排序后字典序最大的配额向量。输出逐层配额、先导方差
+与预测总体总量/均值方差（精确分数），输入顺序无关。预算不可行或校验失败退出 2 且
+旧输出不变，成功原子替换。样例 `fixtures/allocate_pilot.json` 在 B=8 时把高方差层
+noisy 普查、其余常规层取最小 2 个单位。详见 [docs/contract.md](docs/contract.md)。
