@@ -22,6 +22,7 @@ python3 -m venv .venv
 在仓库根目录执行；输出为可独立读取的 JSON，重跑全量重算、不累加。
 
 ```sh
+.venv/bin/survey-import --manifest fixtures/revisions/manifest.json --output run/sample.json
 .venv/bin/survey-estimate --source fixtures/survey.json --output run/report.json
 .venv/bin/survey-estimate --source fixtures/survey.json --domains fixtures/domains.json --output run/report-domains.json
 .venv/bin/python -m unittest discover -s tests -v
@@ -46,3 +47,9 @@ python3 -m venv .venv
 非普查单样本层按原口径报告方差不可估。未传该参数时报告与旧版逐字节一致。
 样例 `fixtures/domains.json` 中 `all` 复现总体估计，`youth` 为跨层重叠域。详见
 [docs/contract.md](docs/contract.md)。
+
+`survey-import` 先把问卷修订 CSV 归并为样本 JSON：清单给原 `strata` 与带 SHA-256
+的文件数组，逐条校验 `unit_id,revision,op,stratum,value` 后按单位取最高版本，
+`delete` 移除单位，同版本一致可重放、冲突失败，输出仅含排序后的 `strata` 与 `sample`
+并通过与 `--source` 相同的校验。样例 `fixtures/revisions/manifest.json` 含删除与改值，
+归并结果与 `fixtures/survey.json` 等价。详见 [docs/contract.md](docs/contract.md)。

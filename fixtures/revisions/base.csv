@@ -1,0 +1,7 @@
+unit_id,revision,op,stratum,value
+S1,1,upsert,small,10
+S2,1,upsert,small,14
+L1,1,upsert,large,20
+L2,1,upsert,large,24
+L3,1,upsert,large,25
+S9,1,upsert,small,99

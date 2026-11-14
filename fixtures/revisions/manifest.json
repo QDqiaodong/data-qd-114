@@ -1,0 +1,22 @@
+{
+  "strata": [
+    {
+      "id": "small",
+      "population": 4
+    },
+    {
+      "id": "large",
+      "population": 6
+    }
+  ],
+  "files": [
+    {
+      "path": "base.csv",
+      "sha256": "6b9fd8a1997f6517efe402c29e84122a568ffa54620b45dd0a6d06e0b68f2d24"
+    },
+    {
+      "path": "revisions.csv",
+      "sha256": "80b57b3df5c48e1e6c8167bdcd44779d339d4ce77de9fdcfcafd9cb4274aef7a"
+    }
+  ]
+}

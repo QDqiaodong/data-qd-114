@@ -9,5 +9,6 @@ requires-python = ">=3.11"
 dependencies = []
 [project.scripts]
 survey-estimate = "survey_estimate.cli:main"
+survey-import = "survey_estimate.survey_import:main"
 [tool.setuptools.packages.find]
 where = ["src"]
