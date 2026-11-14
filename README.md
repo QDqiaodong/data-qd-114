@@ -23,6 +23,7 @@ python3 -m venv .venv
 
 ```sh
 .venv/bin/survey-estimate --source fixtures/survey.json --output run/report.json
+.venv/bin/survey-estimate --source fixtures/survey.json --domains fixtures/domains.json --output run/report-domains.json
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
@@ -37,3 +38,11 @@ python3 -m venv .venv
 两层人口共10、样本5，估计总量192、均值19.2、均值方差1.28，标准误约1.13137。
 `design.py`验证SRSWOR输入，`estimate.py`计算精确设计权重、有限总体校正与逐层贡献。
 不处理非响应、整群抽样或PPS；非普查单样本层明确输出方差不可估，不伪造精度。
+
+可选 `--domains <成员JSON>` 增加可重叠子总体分析：顶层为域名到 unit_id 数组的映射，
+允许空域与跨域重复成员。报告新增按域名排序的 `domains`，逐域给出估计人数、总量、
+均值、均值方差与标准误；人数由设计权重累加成员指示量，均值方差用含有限总体校正的
+比率线性化且保留全部样本（域外单位贡献零，不重算抽样率）。空域均值族为 null，
+非普查单样本层按原口径报告方差不可估。未传该参数时报告与旧版逐字节一致。
+样例 `fixtures/domains.json` 中 `all` 复现总体估计，`youth` 为跨层重叠域。详见
+[docs/contract.md](docs/contract.md)。

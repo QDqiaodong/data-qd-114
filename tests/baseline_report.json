@@ -1,0 +1,124 @@
+{
+  "estimated_mean": {
+    "denominator": "5",
+    "numerator": "96"
+  },
+  "estimated_total": {
+    "denominator": "1",
+    "numerator": "192"
+  },
+  "population": 10,
+  "sample_size": 5,
+  "sample_weights": [
+    {
+      "design_weight": {
+        "denominator": "1",
+        "numerator": "2"
+      },
+      "stratum": "large",
+      "unit_id": "L1",
+      "value": {
+        "denominator": "1",
+        "numerator": "20"
+      }
+    },
+    {
+      "design_weight": {
+        "denominator": "1",
+        "numerator": "2"
+      },
+      "stratum": "large",
+      "unit_id": "L2",
+      "value": {
+        "denominator": "1",
+        "numerator": "24"
+      }
+    },
+    {
+      "design_weight": {
+        "denominator": "1",
+        "numerator": "2"
+      },
+      "stratum": "large",
+      "unit_id": "L3",
+      "value": {
+        "denominator": "1",
+        "numerator": "28"
+      }
+    },
+    {
+      "design_weight": {
+        "denominator": "1",
+        "numerator": "2"
+      },
+      "stratum": "small",
+      "unit_id": "S1",
+      "value": {
+        "denominator": "1",
+        "numerator": "10"
+      }
+    },
+    {
+      "design_weight": {
+        "denominator": "1",
+        "numerator": "2"
+      },
+      "stratum": "small",
+      "unit_id": "S2",
+      "value": {
+        "denominator": "1",
+        "numerator": "14"
+      }
+    }
+  ],
+  "standard_error_mean": 1.131370849898476,
+  "strata": [
+    {
+      "estimated_total": {
+        "denominator": "1",
+        "numerator": "144"
+      },
+      "population": 6,
+      "sample_mean": {
+        "denominator": "1",
+        "numerator": "24"
+      },
+      "sample_size": 3,
+      "sample_variance": {
+        "denominator": "1",
+        "numerator": "16"
+      },
+      "stratum": "large",
+      "total_variance": {
+        "denominator": "1",
+        "numerator": "96"
+      }
+    },
+    {
+      "estimated_total": {
+        "denominator": "1",
+        "numerator": "48"
+      },
+      "population": 4,
+      "sample_mean": {
+        "denominator": "1",
+        "numerator": "12"
+      },
+      "sample_size": 2,
+      "sample_variance": {
+        "denominator": "1",
+        "numerator": "8"
+      },
+      "stratum": "small",
+      "total_variance": {
+        "denominator": "1",
+        "numerator": "32"
+      }
+    }
+  ],
+  "variance_mean": {
+    "denominator": "25",
+    "numerator": "32"
+  },
+  "variance_unavailable_strata": []
+}
